@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Maze Challenge
 
-## Getting Started
+Next.js application that finds and visualises the shortest path through
+a maze.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Build custom mazes with walls, start, and goal points
+- A* algorithm finds optimal paths
+- Real-time solving via WebSocket
+- Clean, responsive UI
+- TypeScript for type safety
+
+## Project Structure
+
+```
+src/
+├── __tests__/              # Tests
+├── app/                    # Next.js pages
+├── components/             # React components
+├── lib/                    # A* algorithm
+└── server/                 # WebSocket server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 15.4.4 + React 19
+- TypeScript
+- Tailwind CSS
+- Jest
+- WebSocket (ws)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quick Start
 
-## Learn More
+```bash
+# Install
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Start WebSocket server
+npm run ws-server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start app (in new terminal)
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+## How to Use
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Select mode: Wall, Start, or Goal
+2. Click grid cells to build maze
+3. Click "Solve Maze" for optimal path
+4. Use "Clear" buttons to reset
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## A* Algorithm
+
+- **Input**: 2D grid, start point, goal point
+- **Output**: Optimal path or null
+- **Heuristic**: Manhattan distance
+- **Movement**: Orthogonal only (no diagonals)
+
+```typescript
+astar(grid: number[][], start: Point, goal: Point): Point[] | null
+```
+
+## WebSocket API
+
+**Client → Server:**
+```json
+{
+  "type": "solveMaze",
+  "maze": [[0,1,0], [0,0,0]],
+  "start": [0,0],
+  "goal": [1,2]
+}
+```
+
+**Server → Client:**
+```json
+{
+  "type": "mazeSolved", 
+  "path": [[0,0], [1,0], [1,1], [1,2]],
+  "pathLength": 4
+}
+```
+
+## Scripts
+
+```bash
+npm run dev        # Development server
+npm run ws-server  # WebSocket server  
+npm test           # Run tests
+npm run build      # Production build
+```
+
+## Testing
+
+Jest with TypeScript support. Tests cover:
+- A* algorithm correctness
+- Path finding scenarios
+- Edge cases
+
+```bash
+npm test
+```
+
+Built with Next.js, TypeScript, and A* pathfinding.

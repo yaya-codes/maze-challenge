@@ -1,107 +1,99 @@
 # Maze Challenge
 
-Next.js application that finds and visualises the shortest path through
-a maze.
+Interactive maze builder with real-time A* pathfinding visualization.
 
-## Features
+## Requirements Implementation
 
-- Build custom mazes with walls, start, and goal points
-- A* algorithm finds optimal paths
-- Real-time solving via WebSocket
-- Clean, responsive UI
-- TypeScript for type safety
+**Frontend**
+- Single page (App Router)
+- Grid editor (20 × 20) – click toggles wall/free space
+- Set start & goal points
+- "Solve" button triggers async search – live animation of exploration via WebSocket events
+- After completion: show path line, path length, visited nodes count
 
-## Project Structure
-
-```
-src/
-├── __tests__/              # Tests
-├── app/                    # Next.js pages
-├── components/             # React components
-├── lib/                    # A* algorithm
-└── server/                 # WebSocket server
-```
+**Backend**
+- POST /solve accepts maze array
+- Implement shortest path with A* (no external path finding packages)
+- Stream progress via WebSocket for live animation to frontend
 
 ## Tech Stack
 
 - Next.js 15.4.4 + React 19
 - TypeScript
 - Tailwind CSS
-- Jest
 - WebSocket (ws)
+- Jest
+
+## Project Structure
+
+```
+src/
+├── app/
+│   └── api/solve/          # REST API endpoint
+├── components/             # React components
+├── lib/astar.ts           # A* algorithm
+└── server/websocket.ts    # WebSocket server
+```
 
 ## Quick Start
 
 ```bash
-# Install
 npm install
 
-# Start WebSocket server
+# Terminal 1
 npm run ws-server
 
-# Start app (in new terminal)
+# Terminal 2  
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
 
-## How to Use
+## Usage
 
-1. Select mode: Wall, Start, or Goal
+1. Select Wall, Start, or Goal mode
 2. Click grid cells to build maze
-3. Click "Solve Maze" for optimal path
-4. Use "Clear" buttons to reset
+3. Click "Solve Maze" to watch live pathfinding
+4. View path, length, and visited nodes count
+
+## API
+
+**REST Endpoint**
+```bash
+POST http://localhost:3000/api/solve
+```
+
+**WebSocket Messages**
+```json
+// Start solving
+{ "type": "solvingStarted" }
+
+// Live exploration
+{ "type": "nodeVisited", "point": [2,3] }
+
+// Final result
+{ "type": "mazeSolved", "path": [...], "pathLength": 15 }
+```
 
 ## A* Algorithm
 
-- **Input**: 2D grid, start point, goal point
-- **Output**: Optimal path or null
-- **Heuristic**: Manhattan distance
-- **Movement**: Orthogonal only (no diagonals)
+Custom implementation with Manhattan distance heuristic. No external pathfinding libraries.
 
 ```typescript
 astar(grid: number[][], start: Point, goal: Point): Point[] | null
 ```
 
-## WebSocket API
-
-**Client → Server:**
-```json
-{
-  "type": "solveMaze",
-  "maze": [[0,1,0], [0,0,0]],
-  "start": [0,0],
-  "goal": [1,2]
-}
-```
-
-**Server → Client:**
-```json
-{
-  "type": "mazeSolved", 
-  "path": [[0,0], [1,0], [1,1], [1,2]],
-  "pathLength": 4
-}
-```
-
 ## Scripts
 
 ```bash
-npm run dev        # Development server
-npm run ws-server  # WebSocket server  
+npm run dev        # Next.js development
+npm run ws-server  # WebSocket server
 npm test           # Run tests
 npm run build      # Production build
 ```
 
 ## Testing
 
-Jest with TypeScript support. Tests cover:
-- A* algorithm correctness
-- Path finding scenarios
-- Edge cases
+Jest tests cover algorithm correctness, pathfinding scenarios, and edge cases.
 
-```bash
-npm test
-```
-
-Built with Next.js, TypeScript, and A* pathfinding.
+Built with TypeScript and custom A* pathfinding.

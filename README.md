@@ -40,10 +40,10 @@ src/
 ```bash
 npm install
 
-# Terminal 1
+# Websocket
 npm run ws-server
 
-# Terminal 2  
+# Dev 
 npm run dev
 ```
 
@@ -52,9 +52,9 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Usage
 
 1. Select Wall, Start, or Goal mode
-2. Click grid cells to build maze
+2. Click grid cells to build maze 
 3. Click "Solve Maze" to watch live pathfinding
-4. View path, length, and visited nodes count
+4. View path, clear Path, length, and visited nodes count
 
 ## API
 
